@@ -1,16 +1,17 @@
-version: "3"
+version: "3.8"
 
 services:
   mongo-express:
     image: mongo-express
+    restart: always
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin
       ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
       ME_CONFIG_MONGODB_SERVER: mongo
     restart: unless-stopped
     links:
@@ -20,15 +21,18 @@ services:
 
   mongo:
     image: mongo
+    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: urlshortener
     ports:
       - "27017:27017"
-    volumes:
-      - mongovolume:/data/db
     networks:
       - mongo-compose-network
+    volumes:
+      - mongovolume:/data/db
+      - ./scripts/docker/01-init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
 networks:
   mongo-compose-network:

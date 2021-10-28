@@ -12,7 +12,7 @@ async function bootstrap() {
     const app = express();
 
     app.use(express.json());
-    app.use("/api", routes);
+    app.use(routes);
     app.listen(env.port, () => console.log("running on port:", env.port));
   } catch (error) {
     console.log(error);
